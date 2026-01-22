@@ -14,7 +14,7 @@ import numpy as np
 import torch
 import os
 
-from models import ModelType, create_model_and_tokenizer, EmotionClassifier
+from models import ModelType, create_model_and_tokenizer
 from data.dataset import get_data_loaders
 from trainer import Trainer
 from utils.utils import get_project_root
@@ -49,6 +49,8 @@ def parse_args() -> argparse.Namespace:
     train_group.add_argument("--max_grad_norm", type=float, default=1.0, help="Maximum gradient norm for clipping")
     train_group.add_argument("--patience", type=int, default=10, help="Early stopping patience (epochs without improvement)")
     train_group.add_argument("--use_class_weights", action="store_true", help="Use class weights for imbalanced data")
+    train_group.add_argument("--scheduler", type=str, default="linear", choices=["linear", "cosine", "constant"],
+                            help="LR scheduler: 'linear' (warmup+decay), 'cosine' (warmup+cosine decay), 'constant' (no decay)")
     
     # Output arguments
     output_group = parser.add_argument_group("Output")
@@ -129,7 +131,7 @@ def main():
         output_dir=output_dir, learning_rate=args.learning_rate, epochs=args.epochs,
         weight_decay=args.weight_decay, warmup_ratio=args.warmup_ratio, max_grad_norm=args.max_grad_norm,
         patience=args.patience, class_weights=class_weights, device=args.device,
-        experiment_name=args.experiment_name, config_args=args
+        experiment_name=args.experiment_name, config_args=args, scheduler_type=args.scheduler
     )
     
     # Train

@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torch.optim import AdamW
-from transformers import get_linear_schedule_with_warmup
+from transformers import get_linear_schedule_with_warmup, get_cosine_schedule_with_warmup, get_constant_schedule_with_warmup
 from sklearn.metrics import accuracy_score, f1_score, recall_score, classification_report, confusion_matrix
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -81,7 +81,7 @@ class Trainer:
                  weight_decay: float = 0.01, warmup_ratio: float = 0.1, max_grad_norm: float = 1.0,
                  patience: int = 3, class_weights: Optional[torch.Tensor] = None,
                  device: str = "cuda", experiment_name: Optional[str] = None,
-                 config_args: object = None):
+                 config_args: object = None, scheduler_type: str = "linear"):
         """
         Args:
             model: EmotionClassifier instance
@@ -122,7 +122,16 @@ class Trainer:
         self.optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
         total_steps = len(train_loader) * epochs
         warmup_steps = int(total_steps * warmup_ratio)
-        self.scheduler = get_linear_schedule_with_warmup(self.optimizer, warmup_steps, total_steps)
+
+        # Select scheduler based on type
+        if scheduler_type == "linear":
+            self.scheduler = get_linear_schedule_with_warmup(self.optimizer, warmup_steps, total_steps)
+        elif scheduler_type == "cosine":
+            self.scheduler = get_cosine_schedule_with_warmup(self.optimizer, warmup_steps, total_steps)
+        elif scheduler_type == "constant":
+            self.scheduler = get_constant_schedule_with_warmup(self.optimizer, warmup_steps)
+        else:
+            raise ValueError(f"Unknown scheduler type: {scheduler_type}. Use 'linear', 'cosine', or 'constant'.")
         
         # Early stopping
         self.early_stopping = EarlyStopping(patience=patience, mode="max")
