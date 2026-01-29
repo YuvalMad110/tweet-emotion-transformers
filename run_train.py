@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
     
     # Model arguments
     model_group = parser.add_argument_group("Model")
-    model_group.add_argument("--model_type", type=str, default="DEBERTA_BASE", choices=[m.name for m in ModelType], help="Pretrained model to use")
+    model_group.add_argument("--model_type", type=str, default="DEBERTA_LARGE", choices=[m.name for m in ModelType], help="Pretrained model to use")
     model_group.add_argument("--dropout", type=float, default=0.1, help="Dropout probability for classification head")
     model_group.add_argument("--freeze_encoder", action="store_true", help="Freeze encoder weights (train only classification head)")
     model_group.add_argument("--max_length", type=int, default=None, help="Maximum sequence length for tokenization")
@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     train_group.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay for regularization")
     train_group.add_argument("--warmup_ratio", type=float, default=0.1, help="Ratio of total steps for LR warmup")
     train_group.add_argument("--max_grad_norm", type=float, default=1.0, help="Maximum gradient norm for clipping")
-    train_group.add_argument("--patience", type=int, default=10, help="Early stopping patience (epochs without improvement)")
+    train_group.add_argument("--patience", type=int, default=4, help="Early stopping patience (epochs without improvement)")
     train_group.add_argument("--use_class_weights", action="store_true", help="Use class weights for imbalanced data")
     train_group.add_argument("--scheduler", type=str, default="linear", choices=["linear", "cosine", "constant"],
                             help="LR scheduler: 'linear' (warmup+decay), 'cosine' (warmup+cosine decay), 'constant' (no decay)")

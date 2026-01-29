@@ -51,3 +51,10 @@ def get_timestamped_logdir(subdir_name="runs"):
     # Combine path
     log_dir = os.path.join(base_path, subdir_name, f"{timestamp}_{hostname}")
     return log_dir
+
+def str2bool(v):
+    if isinstance(v, bool): return v
+    v = v.lower()
+    if v in ("yes","true","t","1","y","on"): return True
+    if v in ("no","false","f","0","n","off"): return False
+    raise argparse.ArgumentTypeError("Boolean value expected.")

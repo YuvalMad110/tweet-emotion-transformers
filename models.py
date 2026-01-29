@@ -13,7 +13,7 @@ from enum import Enum
 class ModelType(Enum):
     """Supported model types."""
     # DeBERTa variants
-    DEBERTA_SMALL = "microsoft/deberta-v3-small"
+    DEBERTA_SMALL = "microsoft/deberta-small" # "microsoft/deberta-v3-small"
     DEBERTA_BASE = "microsoft/deberta-base"
     DEBERTA_LARGE = "microsoft/deberta-large"
     # BERTweet (only base available)
